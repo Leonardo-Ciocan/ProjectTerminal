@@ -54,7 +54,7 @@ module.exports = React.createClass({
         };
 
         var labelStyle = {
-            fontSize: "14pt",
+            fontSize: "13pt",
             display: "block",
             color: "Gray",
             fontFamily: "Helvetica",
@@ -69,6 +69,7 @@ module.exports = React.createClass({
             fontFamily: "Helvetica",
             padding: "5px"
         };
+
         var output;
         if (this.props.output.type != "text") {
             if (this.props.output.type == "list") {
@@ -80,7 +81,7 @@ module.exports = React.createClass({
                             React.createElement(
                                 'span',
                                 { style: labelStyle },
-                                _this.props.output.labels[rowIndex]
+                                _this.props.output.schema[rowIndex].label
                             ),
                             React.createElement(
                                 'span',

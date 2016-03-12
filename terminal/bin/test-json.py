@@ -2,8 +2,11 @@ import json
 
 example = {
 	"type" : "list",
-	"schema" : ["string" , "string" , "date"],
-	"labels" : ["Name","Place of birth" , "Birthday"],
+	"schema" : [
+		{"type":"string" , "label":"Name"},
+		{"type":"string" , "label":"Place of birth"},
+		{"type":"date" , "label":"Birthday"},
+	],
 	"data" : [
 		["Leonardo" , "Italy" , "18/06/1995"],
 		["Bill" , "Russia" , "19/10/1901"],

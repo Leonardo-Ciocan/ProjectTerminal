@@ -48,7 +48,7 @@ module.exports = React.createClass({
         };
 
         let labelStyle={
-            fontSize:"14pt",
+            fontSize:"13pt",
             display:"block",
             color:"Gray",
             fontFamily:"Helvetica",
@@ -63,13 +63,16 @@ module.exports = React.createClass({
             fontFamily:"Helvetica",
             padding:"5px"
         };
+
+
+
         var output;
         if(this.props.output.type != "text"){
             if(this.props.output.type == "list"){
                 var items = this.props.output.data.map((data,index)=>{
                    let rows = data.map((item,rowIndex)=>{
                      return <div>
-                                <span style={labelStyle}>{this.props.output.labels[rowIndex]}</span>
+                                <span style={labelStyle}>{this.props.output.schema[rowIndex].label}</span>
                                 <span style={contentLabelStyle}>{this.props.output.data[index][rowIndex]}</span>
                             </div>
                    });
