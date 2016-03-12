@@ -5,7 +5,9 @@ module.exports = React.createClass({
   getInitialState () {
     return {
         prompts : [
-            {id:0 , text:"hello" , output:""}
+            {
+                id:0 , text:"hello" , output:{type:"text",data:""}
+            }
         ]
     }
   },

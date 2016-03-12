@@ -10,7 +10,8 @@ module.exports = React.createClass({
     displayName: 'exports',
     getDefaultProps: function getDefaultProps() {
         return {
-            onEnter: function onEnter() {}
+            onEnter: function onEnter() {},
+            output: { type: "text", data: "" }
         };
     },
     getInitialState: function getInitialState() {
@@ -19,6 +20,8 @@ module.exports = React.createClass({
         };
     },
     render: function render() {
+        var _this = this;
+
         var containerStyle = {
             marginTop: "15px"
         };
@@ -26,10 +29,10 @@ module.exports = React.createClass({
         var inputStyle = {
             margin: "10px",
             border: "none",
-            borderBottom: "1px solid lightgray",
-            fontSize: "13pt",
+            fontSize: "11pt",
             lineHeight: "40px",
-            verticalAlign: "center"
+            verticalAlign: "center",
+            width: "300px"
         };
 
         var promptStyle = {
@@ -40,6 +43,66 @@ module.exports = React.createClass({
             paddingLeft: "10px",
             paddingRight: "10px"
         };
+
+        var cardStyle = {
+            display: "inline-block",
+            width: "200px",
+            padding: "10px",
+            border: "1px solid lightgray",
+            margin: "5px",
+            borderRadius: "5px"
+        };
+
+        var labelStyle = {
+            fontSize: "14pt",
+            display: "block",
+            color: "Gray",
+            fontFamily: "Helvetica",
+            fontWeight: "200",
+            padding: "5px",
+            marginTop: "8px"
+        };
+
+        var contentLabelStyle = {
+            fontSize: "13pt",
+            fontWeight: "200",
+            fontFamily: "Helvetica",
+            padding: "5px"
+        };
+        var output;
+        if (this.props.output.type != "text") {
+            if (this.props.output.type == "list") {
+                var items = this.props.output.data.map(function (data, index) {
+                    var rows = data.map(function (item, rowIndex) {
+                        return React.createElement(
+                            'div',
+                            null,
+                            React.createElement(
+                                'span',
+                                { style: labelStyle },
+                                _this.props.output.labels[rowIndex]
+                            ),
+                            React.createElement(
+                                'span',
+                                { style: contentLabelStyle },
+                                _this.props.output.data[index][rowIndex]
+                            )
+                        );
+                    });
+                    return React.createElement(
+                        'div',
+                        { style: cardStyle },
+                        rows
+                    );
+                });
+
+                output = items;
+            }
+        } else {
+            console.log("catched");
+            var inner = this.props.output.data.replace(/\n/g, "<br />");
+            output = React.createElement('div', { style: { whiteSpace: "no-wrap", paddingLeft: "20px", fontFamily: "consolas", fontSize: "10pt" }, dangerouslySetInnerHTML: { __html: inner } });
+        }
 
         return React.createElement(
             'div',
@@ -58,11 +121,8 @@ module.exports = React.createClass({
                 )
             ),
             React.createElement('input', { ref: 'input', onKeyPress: this.keyPressed, style: inputStyle }),
-            React.createElement(
-                'span',
-                { style: { display: "block", padding: "10px" } },
-                this.props.output
-            )
+            React.createElement('div', null),
+            output
         );
     },
 
@@ -90,37 +150,39 @@ var Prompt = require("./Prompt.js");
 var ipc = window.require('ipc');
 
 module.exports = React.createClass({
-  displayName: "exports",
-  getInitialState: function getInitialState() {
-    return {
-      prompts: [{ id: 0, text: "hello", output: "" }]
-    };
-  },
-  render: function render() {
-    var _this = this;
+    displayName: "exports",
+    getInitialState: function getInitialState() {
+        return {
+            prompts: [{
+                id: 0, text: "hello", output: { type: "text", data: "" }
+            }]
+        };
+    },
+    render: function render() {
+        var _this = this;
 
-    var prompts = this.state.prompts.map(function (i) {
-      return React.createElement(Prompt, { id: i.id, output: i.output, onEnter: _this.addPrompt });
-    });
+        var prompts = this.state.prompts.map(function (i) {
+            return React.createElement(Prompt, { id: i.id, output: i.output, onEnter: _this.addPrompt });
+        });
 
-    return React.createElement(
-      "div",
-      null,
-      prompts
-    );
-  },
+        return React.createElement(
+            "div",
+            null,
+            prompts
+        );
+    },
 
-  addPrompt: function addPrompt() {
-    this.state.prompts.push({ id: this.state.prompts.length, text: "" });
-    this.setState({});
-  },
-  componentDidMount: function componentDidMount() {
-    ipc.on("output", function (msg) {
-      console.log(msg);
-      this.state.prompts[msg.id].output = msg.content;
-      this.setState({});
-    }.bind(this));
-  }
+    addPrompt: function addPrompt() {
+        this.state.prompts.push({ id: this.state.prompts.length, text: "" });
+        this.setState({});
+    },
+    componentDidMount: function componentDidMount() {
+        ipc.on("output", function (msg) {
+            console.log(msg);
+            this.state.prompts[msg.id].output = msg.content;
+            this.setState({});
+        }.bind(this));
+    }
 });
 
 },{"./Prompt.js":1}],3:[function(require,module,exports){

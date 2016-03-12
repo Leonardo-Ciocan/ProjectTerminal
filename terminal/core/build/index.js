@@ -23,7 +23,13 @@ var mainWindow = void 0;
 
 ipc.on("exec-command", function (event, msg) {
   function puts(error, stdout, stderr) {
-    mainWindow.send("output", { id: msg.id, content: stdout });
+    console.log(stdout);
+    try {
+      var json = JSON.parse(stdout);
+      mainWindow.send("output", { id: msg.id, content: json });
+    } catch (e) {
+      mainWindow.send("output", { id: msg.id, content: { type: "text", data: stdout } });
+    }
   }
   exec(msg.content, puts);
 });
