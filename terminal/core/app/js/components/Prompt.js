@@ -126,22 +126,26 @@ module.exports = React.createClass({
             output = <div style={{whiteSpace:"no-wrap",paddingLeft:"20px",fontFamily:"consolas",fontSize:"10pt"}} dangerouslySetInnerHTML={{__html:inner}}></div>
         }
         else if (this.props.output.type == "tabular/single") {
-                google.charts.load('current', {'packages':['corechart']});
-                google.charts.setOnLoadCallback(function(){
-                    var data = [["Times used today","Value"]];
-                    for(var i = 0; i < this.props.output.data.length;i++){
-                        data.push([this.props.output.data[i].label , this.props.output.data[i].value]);
-                    }
+                //google.charts.setOnLoadCallback(function(){
+                //
+                //    //output = chart;
+                //}.bind(this));
 
-                    console.log(this.props);
+                console.log("DRAWING");
+                var data = [["Times used today","Value"]];
+                for(var i = 0; i < this.props.output.data.length;i++){
+                    data.push([this.props.output.data[i].label , this.props.output.data[i].value]);
+                }
 
-                    var dv = <div></div>;
-                    var cdata = google.visualization.arrayToDataTable(data);
-                    var chart = new google.visualization.BarChart(this.refs.outputHolder);
-                    chart.draw(cdata, {});
-                    //output = chart;
-                }.bind(this));
+                console.log(this.props);
+
+                var dv = <div></div>;
+                var cdata = google.visualization.arrayToDataTable(data);
+                var chart = new google.visualization.BarChart(this.refs.outputHolder);
+                chart.draw(cdata, {});
+                chart.draw(cdata, {});
         }
+
 
         return (
             <div style={containerStyle}>
@@ -157,8 +161,8 @@ module.exports = React.createClass({
                 <div></div>
                 {filterHolder}
                 <div></div>
-                <div ref="outputHolder">{output}</div>
-
+                <div ref="outputHolder"></div>
+                {output}
 
             </div>
         );

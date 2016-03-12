@@ -20,6 +20,8 @@ let core = require("./core.js");
 //    console.log("locataiton changed");
 //});
 
+google.charts.load('current', {'packages':['corechart']});
+
 var ipc = window.require('ipc');
 ipc.send("hello", "sword");
 

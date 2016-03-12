@@ -24,7 +24,7 @@ module.exports = React.createClass({
     }
   },
   render () {
-    let prompts = this.state.prompts.map((i) => <Prompt id={i.id} output={i.output} onClear={this.clearPrompt} onEnter={this.addPrompt}/>);
+    let prompts = this.state.prompts.map((i) => <Prompt key={i.id} id={i.id} output={i.output} onClear={this.clearPrompt} onEnter={this.addPrompt}/>);
 
       let topShade = {
         height:"30px", background:"white",

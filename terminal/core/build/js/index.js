@@ -149,21 +149,24 @@ module.exports = React.createClass({
             var inner = this.props.output.data.replace(/\n/g, "<br />");
             output = React.createElement('div', { style: { whiteSpace: "no-wrap", paddingLeft: "20px", fontFamily: "consolas", fontSize: "10pt" }, dangerouslySetInnerHTML: { __html: inner } });
         } else if (this.props.output.type == "tabular/single") {
-            google.charts.load('current', { 'packages': ['corechart'] });
-            google.charts.setOnLoadCallback(function () {
-                var data = [["Times used today", "Value"]];
-                for (var i = 0; i < this.props.output.data.length; i++) {
-                    data.push([this.props.output.data[i].label, this.props.output.data[i].value]);
-                }
+            //google.charts.setOnLoadCallback(function(){
+            //
+            //    //output = chart;
+            //}.bind(this));
 
-                console.log(this.props);
+            console.log("DRAWING");
+            var data = [["Times used today", "Value"]];
+            for (var i = 0; i < this.props.output.data.length; i++) {
+                data.push([this.props.output.data[i].label, this.props.output.data[i].value]);
+            }
 
-                var dv = React.createElement('div', null);
-                var cdata = google.visualization.arrayToDataTable(data);
-                var chart = new google.visualization.BarChart(this.refs.outputHolder);
-                chart.draw(cdata, {});
-                //output = chart;
-            }.bind(this));
+            console.log(this.props);
+
+            var dv = React.createElement('div', null);
+            var cdata = google.visualization.arrayToDataTable(data);
+            var chart = new google.visualization.BarChart(this.refs.outputHolder);
+            chart.draw(cdata, {});
+            chart.draw(cdata, {});
         }
 
         return React.createElement(
@@ -187,11 +190,8 @@ module.exports = React.createClass({
             React.createElement('div', null),
             filterHolder,
             React.createElement('div', null),
-            React.createElement(
-                'div',
-                { ref: 'outputHolder' },
-                output
-            )
+            React.createElement('div', { ref: 'outputHolder' }),
+            output
         );
     },
 
@@ -271,7 +271,7 @@ module.exports = React.createClass({
         var _this = this;
 
         var prompts = this.state.prompts.map(function (i) {
-            return React.createElement(Prompt, { id: i.id, output: i.output, onClear: _this.clearPrompt, onEnter: _this.addPrompt });
+            return React.createElement(Prompt, { key: i.id, id: i.id, output: i.output, onClear: _this.clearPrompt, onEnter: _this.addPrompt });
         });
 
         var topShade = {
@@ -347,6 +347,8 @@ var core = require("./core.js");
 //ipc.on("location-changed",function(){
 //    console.log("locataiton changed");
 //});
+
+google.charts.load('current', { 'packages': ['corechart'] });
 
 var ipc = window.require('ipc');
 ipc.send("hello", "sword");
