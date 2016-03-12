@@ -1,0 +1,15 @@
+div h1 {
+  font-size: 3em; }
+
+div h2 {
+  font-size: 2em; }
+
+* {
+  font-family: "Consolas", "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial; }
+
+html, body {
+  margin: 0px;
+  padding: 0px; }
+
+textarea:focus, input:focus {
+  outline: none; }

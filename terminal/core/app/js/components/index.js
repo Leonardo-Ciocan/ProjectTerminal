@@ -1,20 +1,34 @@
+let Prompt = require("./Prompt.js");
+var ipc = window.require('ipc');
+
 module.exports = React.createClass({
   getInitialState () {
-    let shiny = ((Math.random() * 8192) > 8191)
-    let image = shiny ? 'assets/sprite_shiny.png' : 'assets/sprite.png'
     return {
-      shiny: shiny,
-      image_src: image
+        prompts : [
+            {
+                id:0 , text:"hello" , output:{type:"text",data:""}
+            }
+        ]
     }
   },
-
   render () {
+    let prompts = this.state.prompts.map((i) => <Prompt id={i.id} output={i.output} onEnter={this.addPrompt}/>);
+
     return (
       <div>
-        <h1>Congratulations! Jolteon was caught!</h1>
-        <img src={this.state.image_src} />
-        <h2>To get started, look through the code in app/ and src/. And don't forget to have fun!</h2>
+        {prompts}
       </div>
     )
-  }
-})
+  },
+    addPrompt:function(){
+        this.state.prompts.push({id:this.state.prompts.length  , text:""});
+        this.setState({});
+    },
+    componentDidMount : function(){
+        ipc.on("output" , function(msg){
+           console.log(msg);
+            this.state.prompts[msg.id].output = msg.content;
+            this.setState({});
+        }.bind(this));
+    }
+});

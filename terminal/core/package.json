@@ -42,8 +42,13 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
+    "cash": "^0.8.0",
+    "hiredis": "^0.4.1",
+    "ipc": "0.0.1",
+    "node-ipc": "^6.0.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
-    "request": "^2.69.0"
+    "request": "^2.69.0",
+    "shelljs": "^0.6.0"
   }
 }
