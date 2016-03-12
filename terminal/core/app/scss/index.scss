@@ -7,3 +7,17 @@ div {
     font-size: 2em;
   }
 }
+
+*{
+  font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
+}
+
+
+html,body{
+  margin :0px;
+  padding:0px;
+}
+
+textarea:focus, input:focus{
+  outline: none;
+}
