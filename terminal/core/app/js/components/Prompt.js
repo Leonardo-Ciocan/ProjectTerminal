@@ -27,7 +27,7 @@ module.exports = React.createClass({
             fontSize:"11pt",
             lineHeight:"40px",
             verticalAlign:"center",
-            width:"300px"
+            width:"250px"
         };
 
         let promptStyle = {
@@ -67,8 +67,15 @@ module.exports = React.createClass({
             padding:"5px"
         };
 
+        let sideBar = {
+          width:"300px",
+            borderLeft:"1px solid lightgray",
+            position:"fixed",
+            right:"0px",top:"0px",bottom:"0px"
+        };
+
         let filterHolder = <div></div>;
-        if(this.props.output.type != "text") {
+        if(this.props.output.type == "list") {
             let filters = this.props.output.schema.map((item,index)=> {
                 return item.label == "" ? <span/> :
                     <span
@@ -84,7 +91,7 @@ module.exports = React.createClass({
         }
 
         var output;
-        if(this.props.output.type != "text"){
+
             if(this.props.output.type == "list"){
                 var items = this.props.output.data.map((data,index)=>{
                    let rows = data.map((item,rowIndex)=>{
@@ -112,11 +119,28 @@ module.exports = React.createClass({
 
                 output = items;
             }
-        }
-        else{
+
+        else if (this.props.output.type == "text"){
             console.log("catched");
             let inner = this.props.output.data.replace(/\n/g, "<br />");
             output = <div style={{whiteSpace:"no-wrap",paddingLeft:"20px",fontFamily:"consolas",fontSize:"10pt"}} dangerouslySetInnerHTML={{__html:inner}}></div>
+        }
+        else if (this.props.output.type == "tabular/single") {
+                google.charts.load('current', {'packages':['corechart']});
+                google.charts.setOnLoadCallback(function(){
+                    var data = [["Times used today","Value"]];
+                    for(var i = 0; i < this.props.output.data.length;i++){
+                        data.push([this.props.output.data[i].label , this.props.output.data[i].value]);
+                    }
+
+                    console.log(this.props);
+
+                    var dv = <div></div>;
+                    var cdata = google.visualization.arrayToDataTable(data);
+                    var chart = new google.visualization.BarChart(this.refs.outputHolder);
+                    chart.draw(cdata, {});
+                    //output = chart;
+                }.bind(this));
         }
 
         return (
@@ -133,7 +157,9 @@ module.exports = React.createClass({
                 <div></div>
                 {filterHolder}
                 <div></div>
-                {output}
+                <div ref="outputHolder">{output}</div>
+
+
             </div>
         );
     },
