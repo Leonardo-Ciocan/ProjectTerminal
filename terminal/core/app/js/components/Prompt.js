@@ -7,6 +7,7 @@ module.exports = React.createClass({
     getDefaultProps(){
       return {
           onEnter : function(){},
+          onClear : function(){},
           output : {type:"text",data:""}
       }
     },
@@ -30,12 +31,13 @@ module.exports = React.createClass({
         };
 
         let promptStyle = {
-            background:"dodgerblue",
-            color:"white",
+            background:"white",
+            color:"dodgerblue",
             display:"inline-block",
             height:"40px",
             paddingLeft:"10px",
-            paddingRight:"10px"
+            paddingRight:"10px",
+            borderRight:"1px solid lightgray"
         };
 
         let cardStyle = {
@@ -44,7 +46,8 @@ module.exports = React.createClass({
             padding:"10px",
             border:"1px solid lightgray",
             margin:"5px",
-            borderRadius:"5px"
+            borderRadius:"5px",
+            overflow:"hidden"
         };
 
         let labelStyle={
@@ -64,17 +67,45 @@ module.exports = React.createClass({
             padding:"5px"
         };
 
+        let filterHolder = <div></div>;
+        if(this.props.output.type != "text") {
+            let filters = this.props.output.schema.map((item,index)=> {
+                return item.label == "" ? <span/> :
+                    <span
+                        onClick={()=>this.sortBy(index)}
+                        style={{cursor:"pointer",padding:"7px" ,color:"dodgerblue",margin:"3px",fontFamily:"Helvetica"}}>
+                        {item.label}
+                    </span>
+            });
 
+            filterHolder = <div style={{fontFamily:"Helvetica!important",padding:"10px"}}>
+                    Sort by : {filters}
+                </div>;
+        }
 
         var output;
         if(this.props.output.type != "text"){
             if(this.props.output.type == "list"){
                 var items = this.props.output.data.map((data,index)=>{
                    let rows = data.map((item,rowIndex)=>{
-                     return <div>
-                                <span style={labelStyle}>{this.props.output.schema[rowIndex].label}</span>
-                                <span style={contentLabelStyle}>{this.props.output.data[index][rowIndex]}</span>
-                            </div>
+                       var card;
+                       if(this.props.output.schema[rowIndex].type == "image"){
+                           card = <div style={{
+                                marginLeft:"-10px",marginTop:"-10px",marginRight:"0px",
+                                width:"300px",height:"130px",
+                                borderBottom:"1px solid lightgray",
+                                backgroundImage:"url("+this.props.output.data[index][rowIndex]+")",
+                                backgroundRepeat:"no-repeat",
+                                backgroundSize:"contain"
+                           }} ></div>;
+                       }else{
+                           card = <div>
+                                       <span style={labelStyle}>{this.props.output.schema[rowIndex].label}</span>
+                                       <span style={contentLabelStyle}>{this.props.output.data[index][rowIndex]}</span>
+                                  </div>
+                       }
+
+                     return card;
                    });
                     return <div style={cardStyle}>{rows}</div>;
                 });
@@ -92,12 +123,15 @@ module.exports = React.createClass({
             <div style={containerStyle}>
                <div style={promptStyle} >
                    <span style={{
+                        fontFamily:"",
                         fontSize:"10pt",
                         lineHeight:"40px",
                         verticalAlign:"middle"
-                   }}>{core.currentFolder.split("/").slice(-3).join("/")}</span>
+                   }}>{core.currentFolder.split("/").slice(-3).join(" • ")}</span>
                </div>
                <input ref="input" onKeyPress={this.keyPressed} style={inputStyle}/>
+                <div></div>
+                {filterHolder}
                 <div></div>
                 {output}
             </div>
@@ -105,6 +139,10 @@ module.exports = React.createClass({
     },
     keyPressed:function(e){
         if (e.key === 'Enter') {
+            if(e.target.value == "clear"){
+                this.props.onClear();
+                return;
+            }
             this.props.onEnter(e.target.value);
             e.target.disabled = true;
             this.setState({content : e.target.value});
@@ -117,5 +155,20 @@ module.exports = React.createClass({
     runCommand(txt){
         console.log("sending exec");
         ipc.send("exec-command" , {id:this.props.id , content: txt});
+    },
+    sortBy(index){
+        this.props.output.data.sort(function (a, b) {
+            if(this.props.output.schema[index].type == "date"){
+                //a = new Date(a);
+            }
+            if (a[index] > b[index]) {
+                return 1;
+            }
+            if (a[index] < b[index]) {
+                return -1;
+            }
+            return 0;
+        });
+        this.setState({});
     }
 });

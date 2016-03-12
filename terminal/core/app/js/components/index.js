@@ -12,11 +12,19 @@ module.exports = React.createClass({
     }
   },
   render () {
-    let prompts = this.state.prompts.map((i) => <Prompt id={i.id} output={i.output} onEnter={this.addPrompt}/>);
+    let prompts = this.state.prompts.map((i) => <Prompt id={i.id} output={i.output} onClear={this.clearPrompt} onEnter={this.addPrompt}/>);
+
+      let topShade = {
+        height:"30px", background:"white",
+          position:"fixed",top:"0px",left:"0px",right:"0px",borderBottom:"1px solid lightgray"
+      };
 
     return (
-      <div>
+      <div style={{marginTop:"40px"}}>
         {prompts}
+          <div style={topShade}>
+
+          </div>
       </div>
     )
   },
@@ -30,5 +38,11 @@ module.exports = React.createClass({
             this.state.prompts[msg.id].output = msg.content;
             this.setState({});
         }.bind(this));
+    },
+    clearPrompt:function(){
+        this.setState({prompts:[]});
+        this.setState({prompts:[{
+            id: 0, text:"hello" , output:{type:"text",data:""}
+        }]});
     }
 });

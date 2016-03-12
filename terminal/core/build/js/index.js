@@ -11,6 +11,7 @@ module.exports = React.createClass({
     getDefaultProps: function getDefaultProps() {
         return {
             onEnter: function onEnter() {},
+            onClear: function onClear() {},
             output: { type: "text", data: "" }
         };
     },
@@ -36,12 +37,13 @@ module.exports = React.createClass({
         };
 
         var promptStyle = {
-            background: "dodgerblue",
-            color: "white",
+            background: "white",
+            color: "dodgerblue",
             display: "inline-block",
             height: "40px",
             paddingLeft: "10px",
-            paddingRight: "10px"
+            paddingRight: "10px",
+            borderRight: "1px solid lightgray"
         };
 
         var cardStyle = {
@@ -50,7 +52,8 @@ module.exports = React.createClass({
             padding: "10px",
             border: "1px solid lightgray",
             margin: "5px",
-            borderRadius: "5px"
+            borderRadius: "5px",
+            overflow: "hidden"
         };
 
         var labelStyle = {
@@ -70,25 +73,61 @@ module.exports = React.createClass({
             padding: "5px"
         };
 
+        var filterHolder = React.createElement('div', null);
+        if (this.props.output.type != "text") {
+            var filters = this.props.output.schema.map(function (item, index) {
+                return item.label == "" ? React.createElement('span', null) : React.createElement(
+                    'span',
+                    {
+                        onClick: function onClick() {
+                            return _this.sortBy(index);
+                        },
+                        style: { cursor: "pointer", padding: "7px", color: "dodgerblue", margin: "3px", fontFamily: "Helvetica" } },
+                    item.label
+                );
+            });
+
+            filterHolder = React.createElement(
+                'div',
+                { style: { fontFamily: "Helvetica!important", padding: "10px" } },
+                'Sort by : ',
+                filters
+            );
+        }
+
         var output;
         if (this.props.output.type != "text") {
             if (this.props.output.type == "list") {
                 var items = this.props.output.data.map(function (data, index) {
                     var rows = data.map(function (item, rowIndex) {
-                        return React.createElement(
-                            'div',
-                            null,
-                            React.createElement(
-                                'span',
-                                { style: labelStyle },
-                                _this.props.output.schema[rowIndex].label
-                            ),
-                            React.createElement(
-                                'span',
-                                { style: contentLabelStyle },
-                                _this.props.output.data[index][rowIndex]
-                            )
-                        );
+                        var card;
+                        if (_this.props.output.schema[rowIndex].type == "image") {
+                            card = React.createElement('div', { style: {
+                                    marginLeft: "-10px", marginTop: "-10px", marginRight: "0px",
+                                    width: "300px", height: "130px",
+                                    borderBottom: "1px solid lightgray",
+                                    backgroundImage: "url(" + _this.props.output.data[index][rowIndex] + ")",
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundSize: "contain"
+                                } });
+                        } else {
+                            card = React.createElement(
+                                'div',
+                                null,
+                                React.createElement(
+                                    'span',
+                                    { style: labelStyle },
+                                    _this.props.output.schema[rowIndex].label
+                                ),
+                                React.createElement(
+                                    'span',
+                                    { style: contentLabelStyle },
+                                    _this.props.output.data[index][rowIndex]
+                                )
+                            );
+                        }
+
+                        return card;
                     });
                     return React.createElement(
                         'div',
@@ -114,14 +153,17 @@ module.exports = React.createClass({
                 React.createElement(
                     'span',
                     { style: {
+                            fontFamily: "",
                             fontSize: "10pt",
                             lineHeight: "40px",
                             verticalAlign: "middle"
                         } },
-                    core.currentFolder.split("/").slice(-3).join("/")
+                    core.currentFolder.split("/").slice(-3).join(" • ")
                 )
             ),
             React.createElement('input', { ref: 'input', onKeyPress: this.keyPressed, style: inputStyle }),
+            React.createElement('div', null),
+            filterHolder,
             React.createElement('div', null),
             output
         );
@@ -129,6 +171,10 @@ module.exports = React.createClass({
 
     keyPressed: function keyPressed(e) {
         if (e.key === 'Enter') {
+            if (e.target.value == "clear") {
+                this.props.onClear();
+                return;
+            }
             this.props.onEnter(e.target.value);
             e.target.disabled = true;
             this.setState({ content: e.target.value });
@@ -141,6 +187,21 @@ module.exports = React.createClass({
     runCommand: function runCommand(txt) {
         console.log("sending exec");
         ipc.send("exec-command", { id: this.props.id, content: txt });
+    },
+    sortBy: function sortBy(index) {
+        this.props.output.data.sort(function (a, b) {
+            if (this.props.output.schema[index].type == "date") {
+                //a = new Date(a);
+            }
+            if (a[index] > b[index]) {
+                return 1;
+            }
+            if (a[index] < b[index]) {
+                return -1;
+            }
+            return 0;
+        });
+        this.setState({});
     }
 });
 
@@ -163,13 +224,19 @@ module.exports = React.createClass({
         var _this = this;
 
         var prompts = this.state.prompts.map(function (i) {
-            return React.createElement(Prompt, { id: i.id, output: i.output, onEnter: _this.addPrompt });
+            return React.createElement(Prompt, { id: i.id, output: i.output, onClear: _this.clearPrompt, onEnter: _this.addPrompt });
         });
+
+        var topShade = {
+            height: "30px", background: "white",
+            position: "fixed", top: "0px", left: "0px", right: "0px", borderBottom: "1px solid lightgray"
+        };
 
         return React.createElement(
             "div",
-            null,
-            prompts
+            { style: { marginTop: "40px" } },
+            prompts,
+            React.createElement("div", { style: topShade })
         );
     },
 
@@ -183,6 +250,12 @@ module.exports = React.createClass({
             this.state.prompts[msg.id].output = msg.content;
             this.setState({});
         }.bind(this));
+    },
+    clearPrompt: function clearPrompt() {
+        this.setState({ prompts: [] });
+        this.setState({ prompts: [{
+                id: 0, text: "hello", output: { type: "text", data: "" }
+            }] });
     }
 });
 
