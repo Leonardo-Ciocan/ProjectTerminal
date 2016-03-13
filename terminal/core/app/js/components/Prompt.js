@@ -4,6 +4,9 @@ var core = require("../core.js");
 var ipc = window.require("ipc");
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
+var wit = require('node-wit');
+var ACCESS_TOKEN = "C2LFJSENV4UBL3GAV2DMHLEU3RHJYOI7";
+
 var shortcuts = [
     {from:"map" , to:"node ../../Map/Phantom.js"},
     {from:"insta" , to:"ruby ../../Instagram/insta.rb"},
@@ -20,12 +23,14 @@ module.exports = React.createClass({
     },
     getInitialState () {
         return {
-           content : ""
+           content : "",
+            translation : ""
         }
     },
     render () {
         let containerStyle = {
-            marginTop:"15px"
+            marginTop:"15px",
+            whiteSpace:"noWrap"
         };
 
         let inputStyle = {
@@ -34,7 +39,7 @@ module.exports = React.createClass({
             fontSize:"11pt",
             lineHeight:"40px",
             verticalAlign:"center",
-            width:"250px"
+            width:"450px"
         };
 
         let promptStyle = {
@@ -190,6 +195,9 @@ module.exports = React.createClass({
                 <div></div>
                 {filterHolder}
                 <div></div>
+                <div style={{padding:"10px"}}>
+                    <span>{this.state.translation == "" ? "" : "Natural Language expression dispatched to command >"  +this.state.translation}</span>
+                </div>
                 <div ref="outputHolder"></div>
                 {output}
 
@@ -205,7 +213,38 @@ module.exports = React.createClass({
             this.props.onEnter(e.target.value);
             e.target.disabled = true;
             this.setState({content : e.target.value});
-            this.runCommand(e.target.value);
+            if(e.target.value[0].toUpperCase() == e.target.value[0]){
+
+                console.log("Sending text to Wit.AI");
+
+                wit.captureTextIntent(ACCESS_TOKEN, e.target.value, function (err, res) {
+                    console.log("Response from Wit for text input: ");
+                    if (err) console.log("Error: ", err);
+                    console.log(JSON.stringify(res, null, " "));
+                    let typeMap = {
+                        "bash" : "sh",
+                        "scala" :"scala",
+                        "typescript" : "ts",
+                        "javascript" : "js"
+                    };
+                    if(res.outcomes[0].intent == "CreateFile"){
+                        var filename = res.outcomes[0].entities["name"][0].value + "." + typeMap[res.outcomes[0].entities["filetype"][0].value];
+                        var cmd = "touch " + filename
+                            + " && echo Created " + filename;
+                        console.log("computed " + cmd);
+                        this.setState({translation:cmd});
+                        this.runCommand(cmd);
+                    }
+                    else if(res.outcomes[0].intent == "Instagram" && res.outcomes[0].entities["target"] != undefined){
+                        var target = res.outcomes[0].entities["target"][0].value;
+                        var cmd = "insta " + target;
+                        this.setState({translation:cmd});
+                        this.runCommand(cmd);
+                    }
+                }.bind(this));
+            }else {
+                this.runCommand(e.target.value);
+            }
         }
     },
     componentDidMount(){

@@ -47,6 +47,7 @@
     "ipc": "0.0.1",
     "material-ui": "^0.15.0-alpha.1",
     "node-ipc": "^6.0.0",
+    "node-wit": "^2.0.0",
     "react": "^0.14.7",
     "react-addons-css-transition-group": "^0.14.7",
     "react-dom": "^0.14.7",

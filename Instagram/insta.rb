@@ -10,7 +10,7 @@ locations = [];
 
 insta = Instagram.client(:access_token => "1455523771.d1a2df2.1fc5f49ad9ca44d18ceb5b6a8b08f3f2")
 
-for item in insta.tag_recent_media("hackathon")
+for item in insta.tag_recent_media(ARGV[0])
 	if item[:location] != nil then
 		a = Geocoder.search("#{item[:location][:latitude]},#{item[:location][:longitude]}").first
 		#item[:location].merge!("country" => a.country, "image" => item[:images][:standard_resolution][:url])
