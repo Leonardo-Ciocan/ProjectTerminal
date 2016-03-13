@@ -487,7 +487,15 @@ module.exports = React.createClass({
             'div',
             { style: { marginTop: "40px", marginRight: "280px" } },
             prompts,
-            React.createElement('div', { style: topShade }),
+            React.createElement(
+                'div',
+                { style: topShade },
+                React.createElement(
+                    'span',
+                    { style: { fontFamily: "Helvetica", lineHeight: "30px", verticalAlign: "middle", color: "gray", display: "block", textAlign: "center" } },
+                    'Termy'
+                )
+            ),
             React.createElement(
                 'div',
                 { style: sideBar },

@@ -141,7 +141,7 @@ module.exports = React.createClass({
       <div style={{marginTop:"40px",marginRight:"280px"}}>
         {prompts}
           <div style={topShade}>
-
+            <span style={{fontFamily:"Helvetica",lineHeight:"30px",verticalAlign:"middle",color:"gray" , display:"block",textAlign:"center"}}>Termy</span>
           </div>
 
           <div style={sideBar}>
