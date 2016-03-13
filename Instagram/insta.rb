@@ -13,13 +13,18 @@ insta = Instagram.client(:access_token => "1455523771.d1a2df2.1fc5f49ad9ca44d18c
 for item in insta.tag_recent_media("hackathon")
 	if item[:location] != nil then
 		a = Geocoder.search("#{item[:location][:latitude]},#{item[:location][:longitude]}").first
-		item[:location].merge!("country" => a.country, "image" => item[:images][:standard_resolution][:url])
-		locations.push(item[:location])
+		#item[:location].merge!("country" => a.country, "image" => item[:images][:standard_resolution][:url])
+		arr = [
+			"some_name",
+			"some_id",
+			a.country,
+			item[:images][:standard_resolution][:url]
+		]
+		locations.push(arr)
 	end
 end
 
 result = { "type" => "list", "schema" => [ 
-	{ "label" => "latitude", "type" => "decimal"}, 
 	{ "label" => "name", "type" => "decimal"},
 	{ "label" => "id", "type" => "integer"},
 	{ "label" => "country", "type" => "string"},

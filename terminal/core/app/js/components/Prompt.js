@@ -2,6 +2,7 @@ var sys = require('sys');
 var exec = require('child_process').exec;
 var core = require("../core.js");
 var ipc = window.require("ipc");
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 module.exports = React.createClass({
     getDefaultProps(){
@@ -94,6 +95,7 @@ module.exports = React.createClass({
 
             if(this.props.output.type == "list"){
                 var items = this.props.output.data.map((data,index)=>{
+                    console.log(data);
                    let rows = data.map((item,rowIndex)=>{
                        var card;
                        if(this.props.output.schema[rowIndex].type == "image"){
@@ -117,7 +119,12 @@ module.exports = React.createClass({
                     return <div style={cardStyle}>{rows}</div>;
                 });
 
-                output = items;
+                output =
+                    <ReactCSSTransitionGroup transitionAppear={true} transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+
+                    {items}
+                    </ReactCSSTransitionGroup>
+                    ;
             }
 
         else if (this.props.output.type == "text"){
@@ -188,9 +195,6 @@ module.exports = React.createClass({
     },
     sortBy(index){
         this.props.output.data.sort(function (a, b) {
-            if(this.props.output.schema[index].type == "date"){
-                //a = new Date(a);
-            }
             if (a[index] > b[index]) {
                 return 1;
             }

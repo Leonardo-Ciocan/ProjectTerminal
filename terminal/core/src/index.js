@@ -23,6 +23,8 @@ let mainWindow;
 ipc.on("exec-command",function(event,msg){
   function puts(error, stdout, stderr) {
     console.log(stdout);
+
+
     try{
       var json = JSON.parse(stdout);
       mainWindow.send("output" , {id:msg.id , content:json});
@@ -30,6 +32,10 @@ ipc.on("exec-command",function(event,msg){
     catch(e){
       mainWindow.send("output" , {id:msg.id , content:{type:"text" , data:stdout}});
     }
+
+
+
+
   }
   exec(msg.content , puts);
 });
