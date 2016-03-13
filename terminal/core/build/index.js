@@ -23,6 +23,7 @@ var mainWindow = void 0;
 
 ipc.on("exec-command", function (event, msg) {
   function puts(error, stdout, stderr) {
+    console.log(stdout);
     console.log(stderr);
 
     try {

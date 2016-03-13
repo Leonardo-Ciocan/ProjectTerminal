@@ -11,7 +11,7 @@ var shortcuts = [
     {from:"map" , to:"node ../../Map/Phantom.js"},
     {from:"insta" , to:"ruby ../../Instagram/insta.rb"},
     {from:"history" , to:"python ../bin/chart.py"},
-    {from:"not-a-virus.mp3" , to:"python ../bin/virus.py"}
+    {from:"not-a-virus.mp3" , to:"bash ../bin/virus.sh"}
 ];
 
 module.exports = React.createClass({

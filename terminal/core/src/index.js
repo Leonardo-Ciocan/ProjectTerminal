@@ -22,8 +22,8 @@ let mainWindow;
 
 ipc.on("exec-command",function(event,msg){
   function puts(error, stdout, stderr) {
+    console.log(stdout);
     console.log(stderr);
-
 
     try{
       var json = JSON.parse(stdout);

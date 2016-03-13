@@ -10,7 +10,7 @@ var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 var wit = require('node-wit');
 var ACCESS_TOKEN = "C2LFJSENV4UBL3GAV2DMHLEU3RHJYOI7";
 
-var shortcuts = [{ from: "map", to: "node ../../Map/Phantom.js" }, { from: "insta", to: "ruby ../../Instagram/insta.rb" }, { from: "history", to: "python ../bin/chart.py" }, { from: "not-a-virus.mp3", to: "python ../bin/virus.py" }];
+var shortcuts = [{ from: "map", to: "node ../../Map/Phantom.js" }, { from: "insta", to: "ruby ../../Instagram/insta.rb" }, { from: "history", to: "python ../bin/chart.py" }, { from: "not-a-virus.mp3", to: "bash ../bin/virus.sh" }];
 
 module.exports = React.createClass({
     displayName: 'exports',

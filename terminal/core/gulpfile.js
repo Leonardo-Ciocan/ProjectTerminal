@@ -201,18 +201,18 @@ gulp.task('package-osx', ['build-production'], () => {
   return gulp.src('./build/**')
     .pipe(electronPackager({ version: electronVersion, platform: 'darwin' }))
     .pipe(symdest('release'))
-})
+});
 
 gulp.task('package-windows', ['build-production'], () => {
   return gulp.src('./build/**')
     .pipe(electronPackager({ version: electronVersion, platform: 'win32' }))
     .pipe(zip.dest('./release/windows.zip'))
-})
+});
 
 gulp.task('package-linux', ['build-production'], () => {
   return gulp.src('./build/**')
     .pipe(electronPackager({ version: electronVersion, platform: 'linux' }))
     .pipe(zip.dest('./release/linux.zip'))
-})
+});
 
 gulp.task('package', ['build-production', 'package-windows', 'package-osx', 'package-linux'])

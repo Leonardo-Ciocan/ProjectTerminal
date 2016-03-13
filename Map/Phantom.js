@@ -18,18 +18,19 @@ var url = "./GeoChart.html";
 //});
 
 var phantom = require('phantom');
-var data="";
+var data;
 
-process.stdin.resume();
-process.stdin.setEncoding('utf8');
-
-process.stdin.on('data', function(chunk) {
-    data += chunk;
-});
-
-process.stdin.on('end', function() {
-    console.log(data);
-});
+//process.stdin.resume();
+//process.stdin.setEncoding('utf8');
+//
+//process.stdin.on('data', function(chunk) {
+//    data += chunk;
+//    console.log(data);
+//});
+//
+//process.stdin.on('end', function() {
+//    console.log(data);
+//});
 
 
 
@@ -43,20 +44,16 @@ phantom.create([
         page.open('./GeoChart.html').then(function(status) {
             page.property('content').then(function(content) {
                 setTimeout(function() {
-                    page.render( __dirname + "/map.png");
+                    page.render( "map.png");
                     page.close();
                     ph.exit();
-
                     var path = require("path");
                     console.log(JSON.stringify({
                         "type":"image",
                         "data":path.resolve(__dirname + "/map.png")
                     }));
-
                     process.exit();
-
-
-                },3000);
+                },5000);
             });
         });
     });
