@@ -7,6 +7,8 @@ var core = require("../core.js");
 var ipc = window.require("ipc");
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
+var shortcuts = [{ from: "map", to: "node ../../Map/Phantom.js" }, { from: "insta", to: "ruby ../../Instagram/insta.rb" }, { from: "history", to: "python ../bin/chart.py" }];
+
 module.exports = React.createClass({
     displayName: 'exports',
     getDefaultProps: function getDefaultProps() {
@@ -176,8 +178,19 @@ module.exports = React.createClass({
             var cdata = google.visualization.arrayToDataTable(data);
             var chart = new google.visualization.BarChart(this.refs.outputHolder);
             chart.draw(cdata, {});
-            chart.draw(cdata, {});
-        }
+            //chart.draw(cdata, {});
+        } else if (this.props.output.type == "image") {
+                output = React.createElement('div', { style: {
+                        background: "url(" + this.props.output.data + ")",
+                        backgroundSize: "contain",
+                        height: "300px",
+                        width: "100%",
+                        marginTop: "5px",
+                        marginBottom: "5px"
+                    } });
+
+                console.log(this.props.output.data);
+            }
 
         return React.createElement(
             'div',
@@ -222,6 +235,9 @@ module.exports = React.createClass({
     },
     runCommand: function runCommand(txt) {
         console.log("sending exec");
+        shortcuts.forEach(function (shortcut) {
+            txt = txt.replace(shortcut.from, shortcut.to);
+        });
         ipc.send("exec-command", { id: this.props.id, content: txt });
     },
     sortBy: function sortBy(index) {
@@ -265,6 +281,8 @@ var styles = {
     }
 };
 
+var promptID = 0;
+
 module.exports = React.createClass({
     displayName: 'exports',
     getInitialState: function getInitialState() {
@@ -303,20 +321,24 @@ module.exports = React.createClass({
     },
 
     addPrompt: function addPrompt() {
-        this.state.prompts.push({ id: this.state.prompts.length, text: "" });
+        promptID += 1;
+        this.state.prompts.push({ id: promptID, text: "" });
         this.setState({});
     },
     componentDidMount: function componentDidMount() {
         ipc.on("output", function (msg) {
             console.log(msg);
-            this.state.prompts[msg.id].output = msg.content;
+            this.state.prompts.filter(function (x) {
+                return x.id == msg.id;
+            })[0].output = msg.content;
             this.setState({});
         }.bind(this));
     },
     clearPrompt: function clearPrompt() {
+        promptID += 1;
         this.setState({ prompts: [] });
         this.setState({ prompts: [{
-                id: 0, text: "hello", output: { type: "text", data: "" }
+                id: promptID, text: "hello", output: { type: "text", data: "" }
             }] });
     }
 });

@@ -13,6 +13,8 @@ const styles = {
     },
 };
 
+let promptID = 0;
+
 module.exports = React.createClass({
   getInitialState () {
     return {
@@ -53,20 +55,22 @@ module.exports = React.createClass({
     )
   },
     addPrompt:function(){
-        this.state.prompts.push({id:this.state.prompts.length  , text:""});
+        promptID+=1;
+        this.state.prompts.push({id:promptID  , text:""});
         this.setState({});
     },
     componentDidMount : function(){
         ipc.on("output" , function(msg){
            console.log(msg);
-            this.state.prompts[msg.id].output = msg.content;
+            this.state.prompts.filter((x)=>x.id==msg.id)[0].output = msg.content;
             this.setState({});
         }.bind(this));
     },
     clearPrompt:function(){
+        promptID += 1;
         this.setState({prompts:[]});
         this.setState({prompts:[{
-            id: 0, text:"hello" , output:{type:"text",data:""}
+            id: promptID, text:"hello" , output:{type:"text",data:""}
         }]});
     }
 });

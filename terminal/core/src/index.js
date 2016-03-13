@@ -22,7 +22,7 @@ let mainWindow;
 
 ipc.on("exec-command",function(event,msg){
   function puts(error, stdout, stderr) {
-    console.log(stdout);
+    console.log(stderr);
 
 
     try{
@@ -32,12 +32,8 @@ ipc.on("exec-command",function(event,msg){
     catch(e){
       mainWindow.send("output" , {id:msg.id , content:{type:"text" , data:stdout}});
     }
-
-
-
-
   }
-  exec(msg.content , puts);
+  exec(msg.content,{env:{"NODE_PATH" : process.env.NODE_PATH}} , puts);
 });
 
 //ipc.sendChannel('location-changed', "/core/");

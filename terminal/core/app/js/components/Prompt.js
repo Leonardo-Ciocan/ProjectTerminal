@@ -4,6 +4,12 @@ var core = require("../core.js");
 var ipc = window.require("ipc");
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
+var shortcuts = [
+    {from:"map" , to:"node ../../Map/Phantom.js"},
+    {from:"insta" , to:"ruby ../../Instagram/insta.rb"},
+    {from:"history" , to:"python ../bin/chart.py"}
+];
+
 module.exports = React.createClass({
     getDefaultProps(){
       return {
@@ -152,11 +158,25 @@ module.exports = React.createClass({
                 var cdata = google.visualization.arrayToDataTable(data);
                 var chart = new google.visualization.BarChart(this.refs.outputHolder);
                 chart.draw(cdata, {});
-                chart.draw(cdata, {});
+                //chart.draw(cdata, {});
+        }
+        else if (this.props.output.type == "image") {
+                output = <div style={{
+                    background:"url(" + this.props.output.data + ")",
+                    backgroundSize:"contain",
+                    height:"300px",
+                    width:"100%",
+                    marginTop:"5px",
+                    marginBottom:"5px"
+                }}></div>;
+
+                console.log(this.props.output.data);
         }
 
 
-        return (
+
+
+                return (
             <div style={containerStyle}>
                <div style={promptStyle} >
                    <span style={{
@@ -193,6 +213,9 @@ module.exports = React.createClass({
     },
     runCommand(txt){
         console.log("sending exec");
+        shortcuts.forEach((shortcut)=>{
+           txt = txt.replace(shortcut.from , shortcut.to);
+        });
         ipc.send("exec-command" , {id:this.props.id , content: txt});
     },
     sortBy(index){
