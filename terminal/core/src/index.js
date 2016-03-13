@@ -40,7 +40,6 @@ ipc.on("exec-command",function(event,msg){
   exec(msg.content , puts);
 });
 
-
 //ipc.sendChannel('location-changed', "/core/");
 
 

@@ -2,7 +2,7 @@
  * Created by Maria on 3/12/2016.
  */
 
-var url = "http://www.google.com";
+var url = "./GeoChart.html";
 
 //var page = require('webpage').create();
 //page.open(url, function(status) {
