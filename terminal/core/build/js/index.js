@@ -54,7 +54,8 @@ module.exports = React.createClass({
             border: "1px solid lightgray",
             margin: "5px",
             borderRadius: "5px",
-            overflow: "hidden"
+            overflow: "hidden",
+            verticalAlign: "top"
         };
 
         var labelStyle = {
@@ -68,10 +69,13 @@ module.exports = React.createClass({
         };
 
         var contentLabelStyle = {
-            fontSize: "13pt",
+            fontSize: "11.5pt",
             fontWeight: "200",
             fontFamily: "Helvetica",
-            padding: "5px"
+            padding: "5px",
+            whiteSpace: "normal",
+            overflow: "hidden",
+            display: "inline-block"
         };
 
         var sideBar = {
@@ -113,11 +117,11 @@ module.exports = React.createClass({
                     if (_this.props.output.schema[rowIndex].type == "image") {
                         card = React.createElement('div', { style: {
                                 marginLeft: "-10px", marginTop: "-10px", marginRight: "0px",
-                                width: "300px", height: "130px",
+                                width: "222px", height: "130px",
                                 borderBottom: "1px solid lightgray",
-                                backgroundImage: "url(" + _this.props.output.data[index][rowIndex] + ")",
+                                background: "url(" + _this.props.output.data[index][rowIndex] + ") no-repeat center center",
                                 backgroundRepeat: "no-repeat",
-                                backgroundSize: "contain"
+                                backgroundSize: "cover"
                             } });
                     } else {
                         card = React.createElement(
@@ -131,7 +135,7 @@ module.exports = React.createClass({
                             React.createElement(
                                 'span',
                                 { style: contentLabelStyle },
-                                _this.props.output.data[index][rowIndex]
+                                _this.props.output.data[index][rowIndex].substring(0, 100)
                             )
                         );
                     }
@@ -146,8 +150,8 @@ module.exports = React.createClass({
             });
 
             output = React.createElement(
-                ReactCSSTransitionGroup,
-                { transitionAppear: true, transitionName: 'example', transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+                'div',
+                { style: { overflow: "scroll", overflowY: "hidden", "whiteSpace": "nowrap" } },
                 items
             );
         } else if (this.props.output.type == "text") {

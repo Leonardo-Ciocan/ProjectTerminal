@@ -48,7 +48,8 @@ module.exports = React.createClass({
             border:"1px solid lightgray",
             margin:"5px",
             borderRadius:"5px",
-            overflow:"hidden"
+            overflow:"hidden",
+            verticalAlign:"top"
         };
 
         let labelStyle={
@@ -62,10 +63,13 @@ module.exports = React.createClass({
         };
 
         let contentLabelStyle = {
-            fontSize:"13pt",
+            fontSize:"11.5pt",
             fontWeight:"200",
             fontFamily:"Helvetica",
-            padding:"5px"
+            padding:"5px",
+            whiteSpace:"normal",
+            overflow:"hidden",
+            display:"inline-block"
         };
 
         let sideBar = {
@@ -101,16 +105,16 @@ module.exports = React.createClass({
                        if(this.props.output.schema[rowIndex].type == "image"){
                            card = <div style={{
                                 marginLeft:"-10px",marginTop:"-10px",marginRight:"0px",
-                                width:"300px",height:"130px",
+                                width:"222px",height:"130px",
                                 borderBottom:"1px solid lightgray",
-                                backgroundImage:"url("+this.props.output.data[index][rowIndex]+")",
+                                background:"url("+this.props.output.data[index][rowIndex]+") no-repeat center center",
                                 backgroundRepeat:"no-repeat",
-                                backgroundSize:"contain"
+                                backgroundSize:"cover"
                            }} ></div>;
                        }else{
                            card = <div>
                                        <span style={labelStyle}>{this.props.output.schema[rowIndex].label}</span>
-                                       <span style={contentLabelStyle}>{this.props.output.data[index][rowIndex]}</span>
+                                       <span style={contentLabelStyle}>{this.props.output.data[index][rowIndex].substring(0,100)}</span>
                                   </div>
                        }
 
@@ -120,11 +124,9 @@ module.exports = React.createClass({
                 });
 
                 output =
-                    <ReactCSSTransitionGroup transitionAppear={true} transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-
-                    {items}
-                    </ReactCSSTransitionGroup>
-                    ;
+                    <div style={{overflow:"scroll",overflowY:"hidden" , "whiteSpace":"nowrap"}}>
+                            {items}
+                    </div>;
             }
 
         else if (this.props.output.type == "text"){

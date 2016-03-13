@@ -15,20 +15,18 @@ for item in insta.tag_recent_media("hackathon")
 		a = Geocoder.search("#{item[:location][:latitude]},#{item[:location][:longitude]}").first
 		#item[:location].merge!("country" => a.country, "image" => item[:images][:standard_resolution][:url])
 		arr = [
-			"some_name",
-			"some_id",
-			a.country,
-			item[:images][:standard_resolution][:url]
+			item[:images][:standard_resolution][:url],
+			item.caption.text,
+			a.country
 		]
 		locations.push(arr)
 	end
 end
 
 result = { "type" => "list", "schema" => [ 
-	{ "label" => "name", "type" => "decimal"},
-	{ "label" => "id", "type" => "integer"},
-	{ "label" => "country", "type" => "string"},
-	{ "label" => "image", "type" => "image"},
+	{ "label" => "", "type" => "image"},
+	{ "label" => "Caption", "type" => "string"},
+	{ "label" => "Country", "type" => "string"}
 ], "data" => locations }
 
 puts result.to_json
