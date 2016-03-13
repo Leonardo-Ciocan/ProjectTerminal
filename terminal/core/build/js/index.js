@@ -271,6 +271,15 @@ module.exports = React.createClass({
             } else {
                 this.runCommand(e.target.value);
             }
+        } else {
+            this.props.shortcuts.forEach(function (shortcut) {
+
+                if ((e.target.value + e.key).endsWith(shortcut.from)) {
+
+                    e.target.value = (e.target.value + e.key).replace(shortcut.from, shortcut.to);
+                    e.preventDefault();
+                }
+            });
         }
     },
     componentDidMount: function componentDidMount() {
@@ -298,6 +307,7 @@ module.exports = React.createClass({
 });
 
 },{"../core.js":3,"child_process":51,"node-wit":189,"react-addons-css-transition-group":244,"sys":425}],2:[function(require,module,exports){
+(function (process){
 'use strict';
 
 var _tabs = require('material-ui/lib/tabs/tabs');
@@ -336,6 +346,8 @@ var ipc = window.require('ipc');
 
 var injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
+
+console.log(process.env);
 
 var theme = {
     fontFamily: 'Helvetica, sans-serif',
@@ -388,7 +400,7 @@ module.exports = React.createClass({
         var _this = this;
 
         var prompts = this.state.prompts.map(function (i) {
-            return React.createElement(Prompt, { key: i.id, id: i.id, output: i.output, onClear: _this.clearPrompt, onEnter: _this.addPrompt });
+            return React.createElement(Prompt, { shortcuts: _this.state.shortcuts, key: i.id, id: i.id, output: i.output, onClear: _this.clearPrompt, onEnter: _this.addPrompt });
         });
 
         var topShade = {
@@ -404,7 +416,8 @@ module.exports = React.createClass({
             padding: "10px",
             paddingLeft: "5px",
             paddingRight: "15px",
-            zIndex: "999"
+            zIndex: "999",
+            background: "white"
         };
 
         var inputStyle = {
@@ -542,7 +555,8 @@ module.exports = React.createClass({
     }
 });
 
-},{"./Prompt.js":1,"material-ui/lib/styles/colors":166,"material-ui/lib/styles/spacing":168,"material-ui/lib/styles/theme-manager":169,"material-ui/lib/styles/zIndex":176,"material-ui/lib/tabs/tab":177,"material-ui/lib/tabs/tabs":179,"material-ui/lib/utils/color-manipulator":183,"react-tap-event-plugin":253}],3:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"./Prompt.js":1,"_process":231,"material-ui/lib/styles/colors":166,"material-ui/lib/styles/spacing":168,"material-ui/lib/styles/theme-manager":169,"material-ui/lib/styles/zIndex":176,"material-ui/lib/tabs/tab":177,"material-ui/lib/tabs/tabs":179,"material-ui/lib/utils/color-manipulator":183,"react-tap-event-plugin":253}],3:[function(require,module,exports){
 "use strict";
 
 var core = {

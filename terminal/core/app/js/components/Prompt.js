@@ -246,6 +246,17 @@ module.exports = React.createClass({
                 this.runCommand(e.target.value);
             }
         }
+        else{
+            this.props.shortcuts.forEach((shortcut)=>{
+
+
+                if((e.target.value+e.key).endsWith(shortcut.from)){
+
+                   e.target.value = (e.target.value+e.key).replace(shortcut.from , shortcut.to);
+                   e.preventDefault();
+               }
+            });
+        }
     },
     componentDidMount(){
         this.refs.input.focus();

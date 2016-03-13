@@ -12,6 +12,8 @@ import Spacing from 'material-ui/lib/styles/spacing';
 import zIndex from 'material-ui/lib/styles/zIndex';
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
 
+console.log(process.env);
+
  const theme =  {
     fontFamily: 'Helvetica, sans-serif',
     palette: {
@@ -67,7 +69,7 @@ module.exports = React.createClass({
         };
     },
   render () {
-    let prompts = this.state.prompts.map((i) => <Prompt key={i.id} id={i.id} output={i.output} onClear={this.clearPrompt} onEnter={this.addPrompt}/>);
+    let prompts = this.state.prompts.map((i) => <Prompt shortcuts={this.state.shortcuts} key={i.id} id={i.id} output={i.output} onClear={this.clearPrompt} onEnter={this.addPrompt}/>);
 
       let topShade = {
         height:"30px", background:"white",
@@ -82,7 +84,8 @@ module.exports = React.createClass({
           padding:"10px",
           paddingLeft:"5px",
           paddingRight:"15px",
-          zIndex:"999"
+          zIndex:"999",
+          background:"white"
       };
 
       let inputStyle = {
