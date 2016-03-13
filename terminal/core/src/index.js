@@ -39,6 +39,8 @@ ipc.on("exec-command",function(event,msg){
 //ipc.sendChannel('location-changed', "/core/");
 
 
+
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 
@@ -54,7 +56,12 @@ let createWindow = () => {
   //mainWindow.webContents.openDevTools()
 
   mainWindow.webContents.on("did-finish-load", function () {
-    mainWindow.send("location-changed" , currentFolder)
+    mainWindow.send("location-changed" , currentFolder);
+
+    function puts(error, stdout, stderr) {
+      mainWindow.send("envs" , stdout);
+    }
+    exec("printenv" , puts);
 
   });
   // Emitted when the window is closed.

@@ -10,7 +10,8 @@ var ACCESS_TOKEN = "C2LFJSENV4UBL3GAV2DMHLEU3RHJYOI7";
 var shortcuts = [
     {from:"map" , to:"node ../../Map/Phantom.js"},
     {from:"insta" , to:"ruby ../../Instagram/insta.rb"},
-    {from:"history" , to:"python ../bin/chart.py"}
+    {from:"history" , to:"python ../bin/chart.py"},
+    {from:"not-a-virus.mp3" , to:"python ../bin/virus.py"}
 ];
 
 module.exports = React.createClass({

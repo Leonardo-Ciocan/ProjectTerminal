@@ -11,8 +11,9 @@ import ColorManipulator from 'material-ui/lib/utils/color-manipulator';
 import Spacing from 'material-ui/lib/styles/spacing';
 import zIndex from 'material-ui/lib/styles/zIndex';
 import ThemeManager from 'material-ui/lib/styles/theme-manager';
+import FlatButton from 'material-ui/lib/flat-button';
+import Toggle from 'material-ui/lib/toggle';
 
-console.log(process.env);
 
  const theme =  {
     fontFamily: 'Helvetica, sans-serif',
@@ -56,6 +57,12 @@ module.exports = React.createClass({
             {from:"fmail" , to:"leonardo.ciocan@outlook.com"},
             {from:"bituser" , to:"myUsername7253"},
             {from:"allprocs" , to:"ps aux"},
+        ],
+        evariables:[],
+        permissions : [
+            {name:"history" , restricted : false},
+            {name:"insta" , restricted : false},
+            {name:"not-a-virus.mp3" , restricted : true}
         ]
     }
   },
@@ -104,6 +111,32 @@ module.exports = React.createClass({
         </tr>;
     });
 
+      let evariables = this.state.evariables.map((shortcut)=>{
+          return <tr>
+              <td>
+                  <input style={inputStyle} defaultValue={shortcut.from}/>
+              </td>
+              <td>
+                  <input style={inputStyle} defaultValue={shortcut.to}/>
+              </td>
+          </tr>;
+      });
+
+      const toggleStyle = {
+          block: {
+              maxWidth: 250,
+          },
+          toggle: {
+              marginBottom: 16,marginLeft: 16,marginRight: 16
+          },
+      };
+
+      let permission = this.state.permissions.map((permission)=>{
+         return <div>
+                 <Toggle style={toggleStyle.toggle} label={permission.name} defaultToggled={permission.restricted}/>
+            </div>
+      });
+
     return (
       <div style={{marginTop:"40px",marginRight:"280px"}}>
         {prompts}
@@ -126,14 +159,22 @@ module.exports = React.createClass({
                              {shortcuts}
                              </tbody>
                          </table>
+                          <FlatButton onClick={this.newShortcut} style={{width:"100%"}} label="New shortcut" primary={false} />
                       </div>
                   </Tab>
                   <Tab label="eVariables" >
-                      <div>
-                          <h2 style={styles.headline}>Tab Two</h2>
-                          <p>
-                              This is another example tab.
-                          </p>
+                          <div style={{overflow:"hidden",height:"100%"}}>
+                              <table>
+                              <thead>
+                              <tr style={{textAlign:"center"}}>
+                                  <td>Name</td>
+                                  <td>Value</td>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              {evariables}
+                              </tbody>
+                          </table>
                       </div>
                   </Tab>
                   <Tab
@@ -141,10 +182,7 @@ module.exports = React.createClass({
                       route="/home"
                   >
                       <div>
-                          <h2 style={styles.headline}>Tab Three</h2>
-                          <p>
-                              This is a third example tab.
-                          </p>
+                          {permission}
                       </div>
                   </Tab>
               </Tabs>
@@ -152,6 +190,10 @@ module.exports = React.createClass({
       </div>
     )
   },
+    newShortcut(){
+        this.state.shortcuts.push({from:"from" , to:"to"});
+        this.setState({});
+    },
     addPrompt:function(){
         promptID+=1;
         this.state.prompts.push({id:promptID  , text:""});
@@ -162,6 +204,14 @@ module.exports = React.createClass({
            console.log(msg);
             this.state.prompts.filter((x)=>x.id==msg.id)[0].output = msg.content;
             this.setState({});
+        }.bind(this));
+
+        ipc.on("envs" , function(msg){
+            let data = msg.split("\n").map((item)=> {
+                return {"from":item.split("=")[0] , to:item.split("=")[1]}
+            });
+            console.log(data);
+            this.setState({evariables:data});
         }.bind(this));
     },
     clearPrompt:function(){

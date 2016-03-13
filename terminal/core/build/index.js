@@ -52,6 +52,11 @@ var createWindow = function createWindow() {
 
   mainWindow.webContents.on("did-finish-load", function () {
     mainWindow.send("location-changed", currentFolder);
+
+    function puts(error, stdout, stderr) {
+      mainWindow.send("envs", stdout);
+    }
+    exec("printenv", puts);
   });
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

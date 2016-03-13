@@ -23,7 +23,7 @@ let core = require("./core.js");
 google.charts.load('current', {'packages':['corechart']});
 
 var ipc = window.require('ipc');
-ipc.send("hello", "sword");
+
 
 ipc.on("location-changed",function(msg){
    core.currentFolder = msg;
